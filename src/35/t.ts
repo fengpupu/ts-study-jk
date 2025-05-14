@@ -23,10 +23,10 @@ type T20 = ReverseString2<'abcd'>;
 type ReverseString3<T extends string> =
     T extends `${infer C}${infer X}` ? `${ReverseString3<X>}${C}` : ""
 type T21 = ReverseString3<'abcd'>;
-type T22 = ReverseString3<`ab${`b` extends string ? true : false}cd`>;
+type T22 = ReverseString3<`ab${`b` extends string ? true : false}cd`>;//立即求值再传入
 type T23 = ReverseString3<`ab${true}cd`>;
 type T24 = ReverseString3<`ab${boolean}cd`>;
-type T25 = ReverseString3<`a13b${any}cd${string}o3o${bigint}xx`>;
+type T25 = ReverseString3<`a13b${any}cd${string}o3o${bigint}xx`>;//不可求值类型，保留了参数，并当成了一个独立的匹配
 
 // TemplateParameters
 type TTemplateFields<T> = T extends `${infer C}${infer X}`

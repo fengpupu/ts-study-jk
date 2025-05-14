@@ -14,7 +14,7 @@ type T2 = {
     [x: T1]: number; // deny type T
     abc: 1;
     abbc: 2;
-    abac: boolean;
+    abac: boolean; //值类型错误
     abaaac: 4;
     abb: 5;
     abokn: boolean;
@@ -22,17 +22,17 @@ type T2 = {
 
 type P2 = T2[T1]; // support template with variables/parameters, but will pre-check `keyof T1`
 
-// mapping, as index signature
-type T3 = {
+// mapping, as i ndex signature
+type T3 =  {
     [k in T1]: number; // support
     // 'abc': 1;       // deny
 }
 
 // keyof T
-type U2 = keyof T2;   // support
+type U2 = keyof  T2;   // support
 
 type T4 = T3 & {
-    // [x: T1]: number;
+    [x: T1]: number;
     abc: 1;
     abbc: 2;
     abac: boolean;
@@ -60,7 +60,7 @@ type T7 = `a${string}c` & 'abc'; // support and converged
 type U = 'a' | 'b';
 type T10 = `a${U}b`
 
-type X = keyof T2; // 1、keyof T和`...`总是安全的；2、typeof V，T[K]，A & B总是预先求值；3、映射与展开总是不兼容的
+type X = keyof T2; // 1、keyof T和`xxx`（其他模版）总是安全的；2、typeof V，T[K]，A & B总是预先求值；3、映射与展开总是不兼容的
 type T11 = `a${X}b`; // 总是求值X，并确定X是否满足“模板参数”的条件
 
 
@@ -70,7 +70,7 @@ type T11 = `a${X}b`; // 总是求值X，并确定X是否满足“模板参数”
 //  - 模板变量（类型）：subtype of 'string | number | bigint | boolean | null | undefined ｜ never'
 // ----------------------------------------
 // 1) 如果string、number或bigint用作最后一个模板变量
-type T201 = `a${string}b`; // .*
+type T201 = `a${string}b`; // 相当于正则 .* 并且string包含了空字符串
 type T202 = `a${number}b`; // [0-9.]{1,}, more... ex: 112.2e3
 // 如果是一个超过数字边界（超大的）数字，那么它会被理解为number类型来参与匹配（也就是说，数字的有效范围被一定程度上是忽略的）
 let x1: T202 = 'a11999999999999999999999999999999934513590134519999999999999999999999999999999999999999999999999999999999999999999999999999999999999999935094135135134511b'; // pass
@@ -81,21 +81,36 @@ let x2: `a${bigint}b` = 'a1134514b'; // let x = 1134514n;
 //  - 字符串字面量和true/false/null/undefined总是作为“有限个确定字符的字符串（定界符）”去匹配
 //  - 在右侧没有有效“定界符（字面量）”的情况下，${string}、${bigint}和${number}有着额外的处理逻辑
 //  - ${string}、${number}、${bigint}和${infer X}都不能作为“定界符”。这使得它们
-//     * 是最后一个模板变量时，就采用贪婪匹配（采用.*）；
+//     * 是最后一个模板变量时，就采用贪婪匹配（采用.+）；
 //     * 右侧是非定界时，就采用尽量少的匹配（采用.）；
-//     * 右侧是定界且还有其它非定界时，就采用非贪婪匹配（采用.*?）。
+//     * 右侧是定界且还有其它非定界时，就采用非贪婪匹配（采用.+?）。
 type T21 = `a${U}   ${number}b`;    // (U1|U2|...|Un)
         // `a(U1|U2)${number}b`
-type T22 = `a${string}XXXX`;        // .*
+
+type T22 = `a${string}XXXX`;        // .+ 任    意多字符
         // `a.*       XXXX`;
-type T23 = `a${string}${number}b`;  // .
+type T221 = `a${number}XXXX`;        // .+ 任    意多字符
+
+let a221:T22 = 'aXXXX'//空字符
+let a222:T22 = 'aaaXXXX'//aa
+let a223:T221 = 'aXXXX'//至少一个数字
+
+type T23 = `a${string}${number}b`;  // 单一字符
         // `a.        ${number}b`
-type T24 = `a${string}X${number}b`; // .*? （非贪婪）
+let a231:T23 = 'aa1b'
+let a232:T23 = 'a1b'//不是不包括空字符，而是1匹配成string了
+
+type T231 = `a${number}${string}b`
+let a21231:T231 = 'a1b'
+
+type T24 = `a${number}X${number}b`; // .+? （非贪婪） 只要出现一个X 就结束，以X结束
         // `a.*?      X${number}b`
 
 let X22: T22 = 'a1bbbca43asdfasd134513f12aaa34134bbbc43XXXX';
 let X23: T23 = 'aa111234b';
-let X24: T24 = 'a1ba111abbcX43b';
+let X24: T24 = 'a112121X43b';
+// let X25: T24 = 'aX43b';//起码得出现一个数字
+
 
 
 // 3) 0-3个字符
@@ -103,9 +118,10 @@ type CH_A = 'A';
 type CH_B = 'B';
 // ...
 type CH_Z = 'Z'; // @see faker-js/faker/src/modules/string/index.ts
-type CH = CH_A | CH_B | CH_Z; // A..Z
+type CH = CH_A | CH_B | CH_Z; // A..Z 是定界的
 type NUL = ""
-type CHS = `${CH|NUL}${CH|NUL}${CH|NUL}`
+type CHS01 = `${CH|NUL}`
+type CHS = `${CH|NUL}${CH|NUL}${CH|NUL}`// 0-3 个字符 定义的字符表
 
 
 // 本讲最后的示例就是“字符表”的生成
@@ -129,6 +145,6 @@ type blank = space | '\n' | '\r' | '\v' | '\f'; // ... | `\u00a0\u1680\u2000\u20
 type ToUnion<T extends string> =
     T extends `${infer U}${infer V}` ? U | ToUnion<V> : never;
 
-type S = 'abcdefghijklmnopqrstuvwxyz';
+type S = 'abcdefghijklmnopqrstuvwxyzA';
 type Low = ToUnion<S>;
 

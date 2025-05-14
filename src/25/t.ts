@@ -64,7 +64,7 @@ class MyClass<X> { foo: T8<X> };
 type A1<T> = {[k in keyof T]: any}; // ex, Record<>
 type B1<T> = {a: T};  // ex, Array<>
 
-// 反例（Exclude, ...）
+// 反例（Exclude, ...）返回不是参数化的自身，不是属于未实例化类型 而是工具类型
 type IsNever<T> = never extends T ? true : false;
 type C1 = IsNever<never>;
 type IsNever2<T> = T extends never ? true : false;
@@ -122,7 +122,8 @@ type Tx22 = {
     a: <X>() => X extends 'T' ? 1 : 2;
 }
 //  - compare 'T1 extends U1 ? X1 : Y1' and 'T2 extends U2 ? X2 : Y2'
-type Tx3 = 
+
+type Tx3 = // 两个延迟计算表达式 可以计算 但怎么计算的结果？？？？
     (<X>() => X extends 'T' ? 1 : 2) extends
     (<Y>() => Y extends 'U' ? 1 : 2)
         ? true

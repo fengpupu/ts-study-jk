@@ -23,7 +23,7 @@ function Foo<T>(a: T): T {
     return a;
 }
 type Foo2 = typeof Foo;
-let x0 = Foo('abc');
+let x0 = Foo('abc');// T 被 反推
 
 // 类（泛型类）
 class TMyClass<T> {
@@ -62,7 +62,7 @@ class TMyClassEx<T> extends TMyClass<T> { // 子类化2（派生泛型类）
 }
 
 // 2）通过构造过程来实例化（包括显式绑定）
-let obj = new TMyClass(100);
+let obj = new TMyClass(100); // 反向推断
 let obj1 = new TMyClass<number>(100);  // （同上）
 let obj2 = new MyClassEx('abc');
 let obj3 = new TMyClassEx(100);
@@ -82,10 +82,16 @@ let y = Foo<number>(123);
 // B2: 带泛型参数的函数类型（实现的实体必须是一个“带泛型参数的函数或类”！）
 // ===============
 // 1) 函数类型
-type Foo = <T>(a: T) => T;  // NOTE: A1
+type FooA = <T>(a: T) => T;  // NOTE: A1
+type Foo22 = typeof Foo
+Foo(22)// 也是带泛型参数的函数，而不仅仅是类型
+
 type TFoo = { // NOTE: A1
     <T>(a: T): T
 };
+FooA(123); // FooA 只是类型
+TFoo(123); //TFoo 只是类型
+
 interface IFoo { // NOTE: A1
     <T>(a: T): T
 };
@@ -104,6 +110,10 @@ let f1: Foo = Foo; // success
 let f2: Foo = (a: string) => a; // BAD CASE
 
 
+
+
 // 3) 使用原则：如果Foo(x: T)的参数x是泛型的，那么
 //    - 原则1（处理x）：如果要处理x，必须通过类型检查（例如类型守护）来处理它作为泛型的多种可能；
 //    - 原则2（传出x）：如果要向新的函数调用Foo2()传出x，则要求Foo2()也必须是一个“带泛型参数的函数类型”。
+type superFoo<T> = <X>(a: T) => X;
+superFoo(123); // “superFoo”仅表示类型，但在此处却作为值使用

@@ -36,7 +36,7 @@ class T3 extends T {
     }
 }
 
-type Transporter = T;
+type Transporter = T;// 子类都可以赋值给父类
 
 class MyController {
     run(x: Transporter) {

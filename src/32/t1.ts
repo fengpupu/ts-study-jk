@@ -27,6 +27,7 @@ type Foo2C = {
     f: 'hi';
     g: undefined;
 }
+// (Foo2A|Foo2B|Foo2C) 约束类型  、 {g: T} 推断类型
 function foo2<T>(a: (Foo2A|Foo2B|Foo2C) & {g: T}, b: boolean): T {
     return a.g
 }

@@ -19,9 +19,9 @@ interface T3 {
   capacity: number;
 }
 
-type Transporter = T1 | T2 | T3;
+type Transporter = T1 | T2 | T3;//可辨识联合类型
 
 let x!: Transporter;
-if ("id" in x && x.id === "T2") {
+if ("id" in x && x.id === "T2") {//通过某个字段，识别类型
   x
 }

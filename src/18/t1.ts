@@ -60,3 +60,9 @@ type S6 = 1['toString']; // 1 as Number, more ...
 enum T10 {a, b, c, d='abc'};   // Enum
 type T11 = keyof T10
 type T12 = T10['toString'];
+type T13 = T10['aa'];
+type T14 = keyof any
+type T15 = keyof never
+
+
+

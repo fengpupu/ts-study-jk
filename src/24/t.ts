@@ -20,9 +20,12 @@ type b2 = Pig & Animal extends Animal ? true : false;
 
 // case 2
 type Tx<L, R> = L extends R ? ['X', L, R] : ['Y', L, R];
-type b4 = Tx<boolean, true>
+type b4 = Tx<boolean, true>//["Y", false, true] | ["X", true, true]
 type b3 = Tx<any, never>; // ["X", never, never] | ["Y", any, never]
 // X = L = L & R
+
+
+
 
 // -------------------- 我是友好的分割线 --------------------
 

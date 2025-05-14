@@ -12,7 +12,7 @@ type T2<X> = [X, ...string[]];
 
 // 3) 对象、带索引签名的对象、映射
 type T3<X> = {a: X};
-type T4<X> = {  // ts(1337): 索引签名参数类型不能是字面量或泛型
+type T4<X> = {  // ts(1337): 索引签名参数类型不能是字面量或泛型！！！！！！！泛型作为值
     [k: string]: X;
     a: X;
 };
@@ -33,6 +33,8 @@ type Intf2<T> = { // 参见“3) 对象类型”
 // ----------------------------------------------------------------------
 interface String extends RelativeIndexable<string> {}
 interface Array<T> extends RelativeIndexable<T> {}
+interface CC<T> extends RelativeIndexable<T> {}
+
 // ----------------------------------------------------------------------
 
 // 5) 表达式类型：联合，或惰性求值

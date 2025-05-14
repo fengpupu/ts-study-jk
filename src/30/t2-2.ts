@@ -2,6 +2,7 @@
 
 enum Transportations {motorcycle, car, truck}
 
+// 接口的派生，只是成员的复制，没有OOP的继承关系
 interface T<T extends Transportations> {
     type: T;
 }
@@ -41,7 +42,7 @@ function start() {
 // 如上，显然x0~3所对应的类型，应当都是T<Transportations>的子类型（是泛型T的实例，亦即是它的具体类型）
 // ...
 transporters.push(x1);
-start();
+start();//也要解决 每个X如何run的问题
 
 /* 泛型及其实例（实例可以理解为子类型）之间存在如下关系
   - T<any>是所有实例类型的超类型；T<never>是所有实例类型的底类型。

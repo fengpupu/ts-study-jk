@@ -34,7 +34,7 @@ class MyController {
 type MyController2 = {  // @see class MyController
     run: <T extends Transporter>(t: T) => void;
 }
-
+// 还是有每一个设计run的问题,MyController2替换MyController
 class Platform2 extends Array<[MyController2, Transporter]> {  // HOWTO FIX IT ?
     runAll() {
         this.forEach(([controller, transporter]) => {

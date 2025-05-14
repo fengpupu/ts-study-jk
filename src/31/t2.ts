@@ -40,7 +40,7 @@ start();
 
 function IsTransporter<Target extends Transportations>(t: any, target: Target): t is T<Target> {
     return 'type' in t && t.type === target;
-}
+}// 泛型函数用作守护程序
 
 let xx!: T1 | T2 | T3;  // is Transporter type
 

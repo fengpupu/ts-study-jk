@@ -19,7 +19,7 @@ type FromString<S extends string, Target extends TemplateParameterTypes = Templa
 //  - 将联合转换成其它类型
 type UnionToIntersection<U> = IsUnion<U> extends true
     ? (U extends U ? ((k: U)=> void) : never) extends
-      ((k: infer I) => void)  // 逆变位置推断出来的类型V，是所有候选类型的交叉。@see release-notes/typescript-2.8.md
+      ((k: infer I) => void)  // 逆变位置推断出来的类型V，是所有候选类型（extends左侧所有的类型）的交叉。函数参数 k 就是逆变位置 @see release-notes/typescript-2.8.md
         ? I
         : never
     : U;
@@ -32,8 +32,8 @@ type UnionToTuple<U> = U;  // 第35讲（列举联合）
 
 //  - Array & Tuple
 type TupleToUnion<T extends any[]> = T[number];
-type T = ['a', string, boolean, never];
-type TU = TupleToUnion<T>;
+type T = ['a', string, boolean, never];//会产生数组签名
+type TU = TupleToUnion<T>;//丢掉了部分类型信息
 type TU2 = TupleToUnion<[]>;
 
 // type TupleToIntersection<T extends any[]> = UnionToIntersection<TupleToUnion<T>>;

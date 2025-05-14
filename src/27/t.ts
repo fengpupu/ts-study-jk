@@ -8,7 +8,7 @@ type T = L extends R ? true : false;
 //-------------------------------------------------
 type TRT<T, R = T> = T extends R ? Exclude<R, T> : never;
 
-type TRT2<T> = [T] extends [infer R]
+type TRT2<T> = [T] extends [infer R] // R 实际上是 T 的别名
    ? T extends R ? Exclude<R, T> : never
    : never;
 
@@ -28,8 +28,8 @@ type AllKeys2<T> = [T, PropertyKey] extends [infer R, infer X]
 // 2） 在语义上的`x in U`列举
 //-------------------------------------------------
 // 第26讲 @see jike/26/t.ts
-type TTT<T> = T extends infer k ? k : never;
-
+type TTT2<T> = T extends infer k ? k : never;
+type test = TTT2<'a' | 'b' | 'c'>; // 'a' | 'b' | 'c'
 
 // type X8 = {
 //    [k in T as 0]: k    // NOTE: 这里将会出现{ 0: U1| .. |Un }
@@ -59,6 +59,8 @@ type T3 = never extends `a${infer x}${infer y}b` ? [x, y] : false;
 //  - 只能使用一个剩余元素（rest elements）
 type T4 = [string, 'a', number, false] extends [infer x, ...infer more] ? [x, more] : never;
 type T51 = [string, 'a', number, false] extends [infer x, ...infer more, false] ? [x, more] : never;
+
+// 元组不能使用多个剩余参数
 type T52 = [string, 'a', number, false] extends [infer x, ...infer more1, number, ...infer more2] ? [x, more1, more2] : never; // BAD CASE
 
 type X6 = {
@@ -72,7 +74,7 @@ type X6 = {
 };
 type T6 = X6 extends {a: infer x; d: infer y} ? [x, y] : false;
 
-type T7 = (a: string) => void extends (a: infer x) => infer y ? [x, y] : never;  // BAD CASE
+type T7 = (a: string) => void extends (a: infer x) => infer y ? [x, y] : never;  // BAD CASE 解析成(...) =>（void extends (a: infer x) => infer y ? [x, y] : never）
       //  ----------     ------------------------------------
 type T71 = ((a: string) => void) extends ((a: infer x) => infer y) ? [x, y] : never;
 
@@ -81,4 +83,4 @@ type T71 = ((a: string) => void) extends ((a: infer x) => infer y) ? [x, y] : ne
 // type XX3<T> = T extends {'a': any; ...infer props} ? props : never;
 type X7<T> = Omit<T, 'a'>;
 // type XX4<T1, T2> = {...T1, ...T2};
-type X8<T1, T2> = Omit<T1 & T2, never>;
+type X8<T1, T2> = Omit<T1 & T2, never>;//但是有签名的话 也会出错

@@ -2,13 +2,14 @@
 // ---------------------------------------------------------------
 type A<T> = keyof T; // or interface
 
-type B = '' extends infer T ? T : never; // `_${infer T}_` or more
+type B = '' extends infer T ? T : never; // `_${infer T}_` or more 并且不可用于缺省值
 
 function Foo<T>(a: T): T {
     return a
 }
 type C = <T>(a: T) => T;  // typeof Foo
-
+// 只有A C 可以缺省
+C(12)
 
 // 回顾“28 | 约束（constraint）”中的内容
 // ---------------------------------------------------------------
@@ -40,13 +41,13 @@ function func<T extends Animal>(a: T): T {
   return a
 }
 
-// “推断”包括：1、TS的一般推断（如果没有声明类型，那么就推断类型）；2、使用infer的显式推断；3、在函数界面上的隐式推断；4、NoInfer<X>;
+// “推断”包括：1、TS的一般推断（如果没有声明类型，那么就推断类型）；2、使用infer的显式推断；3、在函数界面上的隐式推断,传入变量反向推断；4、NoInfer<X>;
 //  （类型标注、类型识别和类型推断，是TS中“作用于JS变量时的”三种主要类型应用/功能/行为）
 // ---------------------------------------------------------------
 
 let x = 'abc';
 
-function foo<T>(a: NoInfer<T>, b: T) {
+function foo<T>(a: NoInfer<T>, b: T) {//某些位置的泛型参数引用标注为不用于推断
 
 }
 
@@ -62,7 +63,7 @@ let x3 = foo2(x1)
 // ---------------------------------------------------------------
 // CASE0 - 泛型声明（或泛型工具）中的缺省参数
 type T3<T = Object> = keyof T;
-type T4 = T3;
+type T4 = T3;// 使用缺省值，不是使用别名
 
 // CASE1 - 泛型函数中的“缺省的泛型参数”的用法
 function foo3<T, U = T extends {a: infer X} ? X : never>(a: T, b?: U) {
@@ -70,9 +71,9 @@ function foo3<T, U = T extends {a: infer X} ? X : never>(a: T, b?: U) {
     return x as unknown as U;
 }
 
-foo3({a: 123})
+foo3({a: 123})//function foo3<{a: number;}, number>
 
-// CASE2 - 为参数标注合适的类型（并同时支持反向地推断类型）
+// CASE2 - 为参数标注合适的类型（并同时支持反向地推断类型）,想达到即标注 又推断
 function foo4<T, U, X>(a: T extends {a: infer U, b: infer X}) { // 这是一个假设的语义
 
 }
@@ -80,9 +81,11 @@ function foo4<T, U, X>(a: T extends {a: infer U, b: infer X}) { // 这是一个�
 // CASE2.1 - 利用缺省参数
 type D = {a: string, b: number}
 function foo41<
-    T extends D,
-    U = T extends {a: infer U} ? U : never,
+    T extends D,// 约束
+    U = T extends {a: infer U} ? U : never,// 推断
     X = T extends {b: infer X} ? X : never
 >(a: T): X {
-    return a.b
+    return a.b 
+    // return a.b as X 使用这里
+
 }

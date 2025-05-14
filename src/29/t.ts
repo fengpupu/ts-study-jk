@@ -8,7 +8,7 @@ type F<X> = (s: X)=>void;
 type A1 = Array<string>;
 type T11<X> = [X, string];
 type T12<X extends string> = {
-    [x in X]: any;
+    [x in X]: any; 
 }
 
 interface Intf<T> {
@@ -22,7 +22,7 @@ type ToUnion<T extends string> =
     T extends `${infer U}${infer V}` ? U | ToUnion<V> : never;
 
 type S = ToUnion<'abcd'>;
-type T1 = S extends ToUnion<infer X> ? X : never;
+type T1 = S extends ToUnion<infer X> ? X : never;//反向推断失败 ，never
 
 
 type A = Array<'abcd'>;
