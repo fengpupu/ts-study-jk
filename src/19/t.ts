@@ -35,19 +35,33 @@ type U = keyof T; // 结果是string|number|...
 // keyof anything
 type T1 = keyof never;
 type T2 = keyof any;
+<<<<<<< HEAD
 type T3 = keyof void; // 单类型：void, unknown, undefined, null => never
 type T4 = keyof "a"; // 单类型：包装类('a', string, String, 1, ...)
 type T5 = keyof T; // 单类型：接口类型(interfaces, lists, object, function, class, ...)
 type T51 = keyof {}; // never, and `interface Empty { }`
 type T52 = keyof object; // never - 空
 type T53 = keyof (() => void); // never - 空
+=======
+type T3 = keyof void; // 单类型：void, unknown, undefined, null
+type T4 = keyof "a"; // 单类型：包装类('a', string, String, 1, ...)
+type T5 = keyof T; // 单类型：接口类型(interfaces, lists, object, function, class, ...)
+type T51 = keyof {}; // never, and `interface Empty { }`
+type T52 = keyof object; // never
+type T53 = keyof (() => void); // never
+>>>>>>> refs/remotes/origin/main
 type T54 = keyof (new () => void); // never, and `class Empty { }`
 class MyClass {
   a: 100;
   static b:number
 }
+<<<<<<< HEAD
 type T555 = keyof MyClass;//type T555 = "a"
 type T55 = keyof typeof MyClass; // type T55 = "b" | "prototype"
+=======
+type T555 = typeof MyClass;
+type T55 = keyof typeof MyClass; // 'prototype'
+>>>>>>> refs/remotes/origin/main
 
 let v = { a: 1, b: "abc" };
 type T6 = keyof typeof v; // 表达式类型：非联合，总是求值
