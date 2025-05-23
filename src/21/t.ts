@@ -10,7 +10,7 @@ type T1 = `a${string}c`; // 模板字面量类型
 
 // interface, object literal or alias types with index signature
 type T2 = {
-//   [x: T1]: number; // deny type T
+  //   [x: T1]: number; // deny type T
   abc: 1;
   abbc: 2;
   // abac: boolean; //值类型错误
@@ -20,9 +20,8 @@ type T2 = {
 };
 
 type P2 = T2[T1]; // support template with variables/parameters, but will pre-check `keyof T1`
-type checkKeyof<T,U> = U extends keyof T ? true : false;
+type checkKeyof<T, U> = U extends keyof T ? true : false;
 type P3 = checkKeyof<T2, T1>; // false
-
 
 // mapping, as i ndex signature
 type T3 = {
@@ -50,12 +49,37 @@ type T5 = {
 };
 type T51 = {
   [k in `a${string}`]: number;
-  aaa: 123;
 };
 type T52 = {
-  [k : `a${string}`]: number;
-  aaa:123
+  [k: `a${string}`]: number;
+  aaa: 123;
+  aba: "aaa";//符合签名，但成员类型值错误
+  b: "abc";// 可以添加其他string类型
 };
+
+type T521 = {
+  [k: number]: number;
+  aaa: 123;
+  aba: "aaa"; //符合签名，但成员类型值错误
+  b: "abc"; // 可以添加其他string类型
+  1: "abc"; // 1是数字类型，符合签名,不符合签名值
+};
+
+type T522 = {
+  [k: string]: number;
+  aaa: 123;
+  // aba: "aaa"; //符合签名，但成员类型值错误
+  // 1: "abc"; // 1是数字类型，符合签名,不符合签名值 
+};
+type IsNumberIndexCovered<T> = T extends {
+  // [k: number]: infer N;
+  [k: string]: infer S;
+}
+  ? N extends S
+    ? "覆盖"
+    : "不覆盖"
+  : "无数字索引";
+type T523 = IsNumberIndexCovered<T522>
 
 // A | B
 type T6 = `a${string}c` | "ab" | "abb" | "ac" | "abc"; // support and merged
@@ -71,8 +95,6 @@ type T10 = `a${U}b`;
 
 type X = keyof T2; // 1、keyof T和`xxx`（其他模版）总是安全的；2、typeof V，T[K]，A & B总是预先求值；3、映射与展开总是不兼容的
 type T11 = `a${X}b`; // 总是求值X，并确定X是否满足“模板参数”的条件
-
-
 
 // ----------------------------------------
 // 多模板参数的情况
@@ -118,10 +140,8 @@ let a21232: T2312 = "a1bbbbb";
 
 type T2313 = `a${string}${string}b`;
 let a12: T2313 = "abbbbbbb";
-type fundType<T>=T extends `a${infer U}b${infer V}b` ? U | V: never;
-type T2314 = fundType<"abbbbbbb">;// "" | "bbbbb"
-
-
+type fundType<T> = T extends `a${infer U}b${infer V}b` ? U | V : never;
+type T2314 = fundType<"abbbbbbb">; // "" | "bbbbb"
 
 type T24 = `a${number}X${number}b`; // .+? （非贪婪） 只要出现一个X 就结束，以X结束
 // `a.*?      X${number}b`
