@@ -24,7 +24,7 @@ type T5 = [...string[],...T];
 type T6 = [number, ...string[]];
 type T7 = [number, ...string[], boolean];
 type T71 = [number, ...T, ...(string | number)[], ...T,boolean];
-type T8 = [...string[], boolean];
+type T8 = [...string[], boolean,...T];
 type L8 = T8["length"];
 type T9 = [...T8]; // 展开一个无限长的元组
 
@@ -43,6 +43,9 @@ let x = [1, 2, "a"];
 let y = { a: 1, b: 2 };
 type T10 = [...any]; // any[]
 type T11 = [...never]; // never
+
+
+
 type T12 = [...typeof x]; // T是表达式，先求值
 type T13 = [...typeof y]; // 求值的结果不是数组或元组
 type T14 = [...(T | number[])]; // T是联合，[...T] | [...number[]]

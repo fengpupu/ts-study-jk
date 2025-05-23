@@ -1,26 +1,35 @@
 /*
+ * @Description:
+ * @Author: fengpu 1126120965@qq.com
+ * @Date: 2025-05-21 09:05:08
+ * @LastEditors: fengpu 1126120965@qq.com
+ * @LastEditTime: 2025-05-22 10:15:40
+ * @FilePath: \ts-study-jk\src\18\t1.ts
+ * Endless Story. - NANA
+ */
+/*
   Examples of T[K]
 */
 
 interface T1 {
-    a: string;
-    c: number;
+  a: string;
+  c: number;
 }
 
 interface T2 {
-    [k: string]: any;
-    a: string;
-    b: boolean;
+  [k: string]: any;
+  a: string;
+  b: boolean;
 }
 
 // 一般用法
-type T3 = T1['a']; // 单类型, subtype of string|number|symbol
+type T3 = T1["a"]; // 单类型, subtype of string|number|symbol
 
 // T[K]中，T是表达式
-let x = {a: 1, b: 2};
-type T4 = typeof x['a']; // 先求值T，再确认K
-type T5 = T1['a']['toString']; // （同上）
-type T6 = (keyof T2)['toString']; // （同上）
+let x = { a: 1, b: 2 };
+type T4 = (typeof x)["a"]; // 先求值T，再确认K
+type T5 = T1["a"]["toString"]; // （同上）
+type T6 = (keyof T2)["toString"]; // （同上）
 
 /* （上一讲的内容）
 type X = T1 & T2; // 交叉
@@ -34,8 +43,8 @@ type T82 = (U | {a: boolean})['a']; // 2、T1['a'] | T2 ['a'] | .. | Tn ['a']
 // T[K]中，K是表达式
 type X = T1 & T2; // 交叉
 type T7 = T1[X]; // （先求值T）求值X
-type T8 = T1['a'|'c']; // 联合  
-type T81 = T1['a'] | T1['c'];
+type T8 = T1["a" | "c"]; // 联合
+type T81 = T1["a"] | T1["c"];
 
 /*
 type X = T1 & T2; // 交叉
@@ -46,23 +55,28 @@ type T7 = keyof U;  // keyof T1 & keyof T2   （注意keyof的结果是string|nu
 */
 
 // 其它1：T[K]中，T是特殊的单类型
-type S1 = any['a'];
-type S2 = never['toString'];
+type S1 = any["a"];
+type S2 = never["toString"];
+type S21 = void[never]; // keyof void == never 只有never
 
 // 其它2：T[K]中，T是包装类型
-type S3 = 'a'['toString'];
-type S4 = string['toString'];
-type S5 = String['toString'];
+type S3 = "a"["toString"];
+type S4 = string["toString"];
+type S5 = String["toString"];
 type S51 = Exclude<keyof String, never>;
-type S6 = 1['toString']; // 1 as Number, more ...
+type S6 = 1["toString"]; // 1 as Number, more ...
 
 // 其它3：T[K]中，T是枚举类型
-enum T10 {a, b, c, d='abc'};   // Enum
-type T11 = keyof T10
-type T12 = T10['toString'];
-type T13 = T10['aa'];
-type T14 = keyof any
-type T15 = keyof never
+enum T10 {
+  a,
+  b,
+  c,
+  d = "abc",
+} // Enum
+type T11 = keyof T10;
+type T112 = keyof typeof T10;
 
-
-
+type T12 = T10["toString"];
+type T13 = T10[T10.a];
+type T14 = keyof any;
+type T15 = keyof never;

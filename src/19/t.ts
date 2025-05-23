@@ -3,8 +3,8 @@
  * @Author: fengpu 1126120965@qq.com
  * @Date: 2024-10-23 13:17:34
  * @LastEditors: fengpu 1126120965@qq.com
- * @LastEditTime: 2024-10-24 16:49:00
- * @FilePath: \fengpu\ts-study-jk\src\19\t.ts
+ * @LastEditTime: 2025-05-21 15:15:18
+ * @FilePath: \ts-study-jk\src\19\t.ts
  * Endless Story. - NANA
  */
 /* 第17讲
@@ -35,33 +35,22 @@ type U = keyof T; // 结果是string|number|...
 // keyof anything
 type T1 = keyof never;
 type T2 = keyof any;
-<<<<<<< HEAD
-type T3 = keyof void; // 单类型：void, unknown, undefined, null => never
-type T4 = keyof "a"; // 单类型：包装类('a', string, String, 1, ...)
-type T5 = keyof T; // 单类型：接口类型(interfaces, lists, object, function, class, ...)
-type T51 = keyof {}; // never, and `interface Empty { }`
-type T52 = keyof object; // never - 空
-type T53 = keyof (() => void); // never - 空
-=======
 type T3 = keyof void; // 单类型：void, unknown, undefined, null
 type T4 = keyof "a"; // 单类型：包装类('a', string, String, 1, ...)
 type T5 = keyof T; // 单类型：接口类型(interfaces, lists, object, function, class, ...)
 type T51 = keyof {}; // never, and `interface Empty { }`
 type T52 = keyof object; // never
 type T53 = keyof (() => void); // never
->>>>>>> refs/remotes/origin/main
 type T54 = keyof (new () => void); // never, and `class Empty { }`
 class MyClass {
   a: 100;
-  static b:number
+  static b: number;
+  constructor() {
+    this.a = 100;
+  }
 }
-<<<<<<< HEAD
-type T555 = keyof MyClass;//type T555 = "a"
-type T55 = keyof typeof MyClass; // type T55 = "b" | "prototype"
-=======
-type T555 = typeof MyClass;
-type T55 = keyof typeof MyClass; // 'prototype'
->>>>>>> refs/remotes/origin/main
+type T555 = keyof MyClass; // 'a'
+type T55 = keyof typeof MyClass; //  "b" | "prototype"
 
 let v = { a: 1, b: "abc" };
 type T6 = keyof typeof v; // 表达式类型：非联合，总是求值
@@ -87,12 +76,20 @@ enum T101 {
   c,
   d = "abc",
 } // Enum
+enum T102 {
+  d = "abc",
+} // Enum
 // enum T10 {a = 0, b = 1, c = 2, d='abc'};   // Enum
 type T11 = keyof T101;
+type T111 = keyof T102;
+
 type T12 = T101["toString"];
 type T121 = String["toString"] | Number["toString"];
-enum EE { }
-type T123123 = keyof EE
+
+enum EE {}
+type T123123 = keyof EE;
+type T1231231 = keyof Number;
+
 /*
 enum T10 {
   a,
@@ -114,6 +111,13 @@ keyof T10 =
 type X1 = Exclude<keyof Number, never>; // 数字枚举(keyof Number)
 type X2 = Exclude<keyof String, never>; // 字符串枚举(keyof String)
 type T122 = keyof Number & keyof String;
+// 常量枚举
+const enum Direction {
+  Up = "UP",
+  Down = "DOWN",
+}
+type lalal = keyof Direction; // 数字枚举(keyof Number)
+type lalal2 = keyof typeof Direction; // 数字枚举(keyof Number)
 
 // 带索引签名的接口类型
 // 元组、数组 都有缺省签名 {[k: number]: XXX}
@@ -123,18 +127,25 @@ type T14 = object[]; // {[k: number]: object}
 type T141 = Exclude<keyof T14, never>;
 
 type T15 = {
-  [k: string]: any;//实际上 包含了number这种索引签名 在类型计算中 但是在兼容性赋值中 不知道如何规定的
-  // a: 1;
-  // b: "string";
-  // 3: true;
-  
+  [k: string]: any; //实际上 包含了number这种索引签名 在类型计算中 但是在兼容性赋值中 不知道如何规定的
+  a: 1;
+  b: "string";
 };
-type T151 = Exclude<keyof T15, never>;
+type T151 = Exclude<keyof T15, never>; //string | number
 type T152 = Pick<T15, keyof T15>;
+// {
+//   [x: string]: any;
+//   [x: number]: any;
+// };
 type T153 = Omit<T15, never>;
+// {
+//   [x: string]: any;
+//   [x: number]: any;
+// };
 
-type A = { a: number; b: 1 }
-type B = { a: number; c: 1 }
-type C = keyof A //接口或者说结构类型 是惰性求值
-type D = keyof (A | B) // 表达式类型 是立即求值
+type A = { a: number; b: 1 };
+type B = { a: number; c: 1 };
+type C = keyof A; //接口或者说结构类型 是惰性求值
+type TC = Exclude<C, never>; // "a" | "b"
 
+type D = keyof (A | B); // 表达式类型 是立即求值
