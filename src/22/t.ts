@@ -22,7 +22,7 @@ type T21 = Exclude<keyof T1, string>;// 并不能达到上文结果，这里keyo
 // 两种语义（基础类型，注意交换L/R与交换X/Y是不同的）
 type Is<T, target> = T extends target ? 'true' : 'false';// T 可以赋值给 target 即 T是一种Target
 type Equal<T, target> = target extends T ? Is<T, target> : 'false'; // WARNING! target能复制给T T又能赋值个Target
-type C1 = Is<'abc', string>
+type C1 = Is<'abc'| 'qqq', string>
 type C2 = Equal<string, string>
 
 // 非裸类型参数
@@ -54,7 +54,7 @@ type X4 = Is<boolean, true>;//裸类型参数 （boolean相当于 true|false的�
 type X41 = boolean extends true ? 'true' : 'false';//不是以裸类型参数的形式参与运算 只返回‘false’
 
 enum E {a, b, c}
-type X5 = Is<E, 1>;//裸类型参数
+type X5 = Is<typeof E, 1>;//裸类型参数
 type X51 = E extends 1 ? 'true' : 'false';//不是裸类型参数
 
 
@@ -81,7 +81,7 @@ type B2 = Extract<
 
 // 作业
 type TT =  {
-  [k:string | number | symbol] : string | number,
+  [k:string] : string | number,
   a:string,
   b:number,
   c:1
